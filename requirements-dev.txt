@@ -8,4 +8,4 @@ httpx           # requests async para testes
 black           # auto formatação
 flake8          # linter
 pytest-cov      # coverage
-
+sentry-sdk[fastapi]
