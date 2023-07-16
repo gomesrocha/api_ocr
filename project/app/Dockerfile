@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install gcc tesseract-ocr python3-pip \
+  && apt-get -y install -no-install-recommends gcc tesseract-ocr python3-pip \
   && apt-get clean
 
 # install python dependencies
