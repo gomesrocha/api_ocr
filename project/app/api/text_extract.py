@@ -3,8 +3,9 @@ from typing import Optional, List
 import time
 import os
 
-from domain import ocr, fileUpload
-from model.TextSchema import TextExtractDocument as ted
+from app.domain import ocr
+from app.domain import fileUpload
+from app.model.TextSchema import TextExtractDocument as ted
 router = APIRouter()
 
 @router.post("/extract_text")
