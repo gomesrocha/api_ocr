@@ -1,5 +1,7 @@
 # API_OCR
+
 Sample API project with FastAPI for creating OCR using Tesseract
+
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)
 
 
