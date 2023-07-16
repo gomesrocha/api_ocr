@@ -21,5 +21,5 @@ async def extract_text(Images_in: List[UploadFile] = File(...)) -> ted:
         image_name = img.filename
         os.remove(temp_file)
     response["Time Taken"] = round((time.time() - s),2)
-    image_out = ted(file_name=image_name, text = text, time_taken = response["Time Taken"])
-    return image_out
+    extracted_text = ted(file_name=image_name, text = text, time_taken = response["Time Taken"])
+    return extracted_text
