@@ -1,10 +1,11 @@
 # pull official base image
-FROM python:3.10-slim-buster
+FROM python:3.11.2-slim-buster
 
 # set working directory
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app/images
 VOLUME /usr/src/app/images
+
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
