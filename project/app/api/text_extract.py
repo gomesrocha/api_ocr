@@ -9,11 +9,11 @@ from app.model.TextSchema import TextExtractDocument as ted
 router = APIRouter()
 
 @router.post("/extract_text")
-async def extract_text(Images_in: List[UploadFile] = File(...)) -> ted:
+async def extract_text(input_images: List[UploadFile] = File(...)) -> ted:
     response = {}
     s = time.time()
     image_name = ""
-    for img in Images_in:
+    for img in input_images:
         print("Images Uploaded: ", img.filename)
         temp_file = fileUpload._save_file_to_server(img, path="./images/", save_as=img.filename)
         text = await ocr.read_image(temp_file)
