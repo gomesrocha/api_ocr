@@ -9,7 +9,7 @@ sentry_sdk.init(
     dsn="https://5c74c0bf64424183a3d8fea7a803a9b0@o4505535984828416.ingest.sentry.io/4505535986335744",
     traces_sample_rate=1.0,
     profiles_sample_rate=1.0,    
-    profiles_sampler=profiles_sampler
+    profiles_sampler=profiles_sample_rate
 )
 
 log = logging.getLogger("uvicorn")
