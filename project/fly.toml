@@ -6,6 +6,9 @@ kill_timeout = 5
 processes = []
 
 [env]
+FLYCTL_INSTALL="/home/runner/.fly"
+PATH="$FLYCTL_INSTALL/bin:$PATH"
+
 
 [experimental]
   allowed_public_ports = []

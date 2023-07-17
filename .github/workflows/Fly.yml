@@ -1,25 +1,33 @@
 name: Fly Deploy
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_REGION: iad
+  FLY_ORG: personal
+
 jobs:
-  deploy:
-    name: Deploy app
+  staging_app:
     runs-on: ubuntu-latest
 
+    # Only run one deployment at a time per PR.
+    #concurrency:
+    #  group: pr-${{ github.event.number }}
+
+    # Create a GitHub deployment environment per staging app so it shows up
+    ## in the pull request UI.
+    #environment:
+    #  name: pr-${{ github.event.number }}
+    #  url: ${{ steps.deploy.outputs.url }}
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-
-      - uses: actions/checkout@v3
-      - name: Build and push Docker image
-        run: docker build . --file ./project/app/Dockerfile --tag api_ocr:$(date +%s)
-
-      - name: Deploy to Fly
-        run: |
-          curl -L https://fly.io/install.sh | sh
-          flyctl deploy
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Deploy
+        id: deploy
+        uses: superfly/fly-pr-review-apps@1.0.0
