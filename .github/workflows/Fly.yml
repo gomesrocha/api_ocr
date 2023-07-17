@@ -10,14 +10,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+
+      - uses: actions/checkout@v3
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: api_ocr:latest
+        run: docker build . --file ./project/app/Dockerfile --tag api_ocr:$(date +%s)
+
       - name: Deploy to Fly
         run: |
           curl -L https://fly.io/install.sh | sh
