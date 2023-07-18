@@ -15,5 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file ./project/app/Dockerfile --tag api_ocr:$(date +%s)
+      run: docker build . --file ./project/Dockerfile --tag api_ocr:$(date +%s)
   
