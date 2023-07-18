@@ -14,6 +14,4 @@ Sample API project with FastAPI for creating OCR using Tesseract and Pytesseract
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)
 
 
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?
-id=gomesrocha_api_ocr)
-
+[![API test](https://api-ocr.fly.dev/)]
