@@ -13,5 +13,7 @@ Sample API project with FastAPI for creating OCR using Tesseract and Pytesseract
 
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)
 
+[![Docker Image CI](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml/badge.svg)](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml)
+
 [API Demo](https://api-ocr.fly.dev/docs)
 
