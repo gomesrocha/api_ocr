@@ -8,9 +8,6 @@
     <a href="https://github.com/gomesrocha/api_ocr/graphs/contributors">
       <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/gomesrocha/api_ocr" />
     </a>
-    <a href="https://codecov.io/gh/gomesrocha/api_ocr">
-      <img alt="Tests Coverage" src="https://codecov.io/gh/agomesrocha/api_ocr/branch/master/graph/badge.svg" />
-    </a>
     <a href="https://github.com/gomesrocha/api_ocr/issues">
       <img alt="Issues" src="https://img.shields.io/github/issues/gomesrocha/api_ocr?color=0088ff" />
     </a>
