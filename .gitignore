@@ -160,3 +160,5 @@ cython_debug/
 
 
 project/app/__pycache__/
+
+*.pyc
