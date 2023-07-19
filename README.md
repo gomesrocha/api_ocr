@@ -17,14 +17,6 @@
     <a href="https://github.com/anuraghazra/github-readme-stats/pulls">
       <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/gomesrocha/api_ocr?color=0088ff" />
     </a>
-    <br />
-    <br />
-    <a href="https://a.paddle.com/v2/click/16413/119403?link=1227">
-      <img src="https://img.shields.io/badge/Supported%20by-VSCode%20Power%20User%20%E2%86%92-gray.svg?colorA=655BE1&colorB=4F44D6&style=for-the-badge"/>
-    </a>
-    <a href="https://a.paddle.com/v2/click/16413/119403?link=2345">
-      <img src="https://img.shields.io/badge/Supported%20by-Node%20Cli.com%20%E2%86%92-gray.svg?colorA=61c265&colorB=4CAF50&style=for-the-badge"/>
-    </a>
   </p>
 
   <p align="center">
@@ -38,8 +30,6 @@
     ·
     <a href="https://github.com/gomesrocha/api_ocr/discussions">Ask Question</a>
   </p>
-
-
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Docker Image CI](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml/badge.svg)](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml)
+[![codecov](https://codecov.io/gh/gomesrocha/api_ocr/branch/main/graph/badge.svg?token=BW2KY4CHE5)](https://codecov.io/gh/gomesrocha/api_ocr) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Docker Image CI](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml/badge.svg)](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml)
 
 
