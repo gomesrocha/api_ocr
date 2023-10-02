@@ -18,7 +18,7 @@ orjson==3.8.1
 packaging==22.0
 Pillow==9.4.0
 pycparser==2.21
-pydantic==1.10.2
+pydantic==1.10.13
 pyparsing==3.0.9
 pytesseract==0.3.10
 python-dotenv==0.21.0
