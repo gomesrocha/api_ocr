@@ -16,7 +16,7 @@ Jinja2==3.1.2
 MarkupSafe==2.1.1
 orjson==3.8.1
 packaging==22.0
-Pillow==9.4.0
+Pillow==10.3.0
 pycparser==2.21
 pydantic==1.10.2
 pyparsing==3.0.9
