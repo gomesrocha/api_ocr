@@ -35,3 +35,4 @@ watchfiles==0.18.1
 websockets==10.4
 sentry-sdk[fastapi]
 pylint
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
