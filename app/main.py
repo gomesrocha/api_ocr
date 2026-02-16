@@ -1,5 +1,6 @@
 import os
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 import sentry_sdk
@@ -13,11 +14,22 @@ sentry_sdk.init(
 )
 
 log = logging.getLogger("uvicorn")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    log.info("Starting up...")
+    yield
+    log.info("Shutting down...")
+
 def create_application() -> FastAPI:
-    application = FastAPI(title="API_OCR",
-    version="0.1.0",
-    description="OCR API project using tesseract and fastapi",
-    author="Fabio"
+    application = FastAPI(
+        title="API_OCR",
+        version="0.1.0",
+        description="OCR API project using tesseract and fastapi",
+        contact={
+            "name": "Fabio",
+        },
+        lifespan=lifespan
     )
     application.include_router(text_extract.router)
 
@@ -25,12 +37,3 @@ def create_application() -> FastAPI:
 
 
 app = create_application()
-
-@app.on_event("startup")
-async def startup_event():
-    log.info("Starting up...")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    log.info("Shutting down...")
