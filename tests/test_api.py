@@ -14,11 +14,16 @@ def mock_ocr_read_image():
         yield mock
 
 def test_extract_text(mock_ocr_read_image):
-    # Create a dummy image file for upload
-    img_content = b"fake image content"
+    # Create a dummy image file for upload (must be valid image structure for validation)
+    # Using PNG header: 89 50 4E 47 0D 0A 1A 0A
+    img_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89'
     files = {"input_images": ("test.png", img_content, "image/png")}
 
     response = client.post("/extract_text", files=files)
+
+    # If status code is 400, it means validation failed.
+    if response.status_code == 400:
+        print(response.json())
 
     assert response.status_code == 200
     data = response.json()
@@ -30,5 +35,40 @@ def test_extract_text(mock_ocr_read_image):
     # Verify mock was called
     mock_ocr_read_image.assert_called_once()
 
-    # Check if temp file was cleaned up (hard to check directly since we don't know the exact path)
-    # But we can verify no error occurred.
+def test_extract_text_custom_params(mock_ocr_read_image):
+    # Valid PNG header
+    img_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89'
+    files = {"input_images": ("test.png", img_content, "image/png")}
+    data = {
+        "lang": "por",
+        "mode": "accurate",
+        "auto_detect": "true"
+    }
+
+    response = client.post("/extract_text", files=files, data=data)
+
+    assert response.status_code == 200
+    mock_ocr_read_image.assert_called_once()
+
+    # Verify arguments passed to read_image
+    call_args = mock_ocr_read_image.call_args
+    assert call_args.kwargs['lang'] == 'por'
+    assert call_args.kwargs['mode'] == 'accurate'
+    assert call_args.kwargs['auto'] is True
+
+def test_extract_text_auto_lang(mock_ocr_read_image):
+    # Valid PNG header
+    img_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89'
+    files = {"input_images": ("test.png", img_content, "image/png")}
+    data = {
+        "lang": "auto"
+    }
+
+    response = client.post("/extract_text", files=files, data=data)
+
+    assert response.status_code == 200
+    mock_ocr_read_image.assert_called_once()
+
+    call_args = mock_ocr_read_image.call_args
+    assert call_args.kwargs['lang'] == 'eng+por' # Should default to eng+por
+    assert call_args.kwargs['auto'] is True # Should be True due to lang='auto'

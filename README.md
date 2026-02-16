@@ -1,36 +1,199 @@
+# API_OCR
 
 <p align="center">
  <img width="100px" src="https://images-na.ssl-images-amazon.com/images/I/610oV8UUi2L.png" align="center" alt="API_OCR" />
  <h2 align="center">API_OCR</h2>
- <p align="center">Sample API project with FastAPI for creating OCR using Tesseract and Pytesseract</p>
+ <p align="center">High-performance OCR API using FastAPI and Tesseract / API de OCR de alta performance usando FastAPI e Tesseract</p>
 </p>
-  <p align="center">
-    <a href="https://github.com/gomesrocha/api_ocr/graphs/contributors">
-      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/gomesrocha/api_ocr" />
-    </a>
-    <a href="https://github.com/gomesrocha/api_ocr/issues">
-      <img alt="Issues" src="https://img.shields.io/github/issues/gomesrocha/api_ocr?color=0088ff" />
-    </a>
-    <a href="https://github.com/anuraghazra/github-readme-stats/pulls">
-      <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/gomesrocha/api_ocr?color=0088ff" />
-    </a>
-    <a href="https://codecov.io/gh/gomesrocha/api_ocr" > 
-        <img src="https://codecov.io/gh/gomesrocha/api_ocr/branch/main/graph/badge.svg?token=BW2KY4CHE5"/> 
-    </a>
-  </p>
 
-  <p align="center">
-    <a href="https://api-ocr.fly.dev/docs">View Demo</a>
-    ·
-    <a href="https://github.com/gomesrocha/api_ocr/issues/new/choose">Report Bug</a>
-    ·
-    <a href="https://github.com/gomesrocha/api_ocr/issues/new/choose">Request Feature</a>
-    ·
-    <a href="https://github.com/gomesrocha/api_ocr/discussions/1770">FAQ</a>
-    ·
-    <a href="https://github.com/gomesrocha/api_ocr/discussions">Ask Question</a>
-  </p>
-  
-  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=gomesrocha_api_ocr&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=gomesrocha_api_ocr)  [![Docker Image CI](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml/badge.svg)](https://github.com/gomesrocha/api_ocr/actions/workflows/docker-image.yml)
+---
 
+## 🇺🇸 English
 
+### Overview
+This project provides a robust API for Optical Character Recognition (OCR) capable of extracting text from images and PDF documents. It supports multiple languages (English and Portuguese), mixed-language documents, and offers configurable processing modes for speed or accuracy.
+
+### Features
+- **Multi-language Support**: English (`eng`), Portuguese (`por`), and mixed (`eng+por`).
+- **Processing Modes**:
+  - `fast`: Quick extraction for clear documents.
+  - `accurate`: Enhanced preprocessing (rescaling, contrast adjustment) for better results on difficult images.
+- **Auto-Detection**: Orientation and Script Detection (OSD) to handle rotated images or unknown scripts.
+- **Strict Validation**: Validates file types via magic bytes (MIME type verification) to ensure security.
+- **PDF Support**: Extract text from PDF documents (hybrid approach: converts pages to images for robust OCR).
+- **Dockerized**: Optimized multi-stage Docker build for easy deployment.
+
+### Installation & Running
+
+#### Using Docker (Recommended)
+```bash
+# Build the image
+docker build -t api_ocr .
+
+# Run the container
+docker run -p 8080:8080 api_ocr
+```
+The API will be available at `http://localhost:8080`.
+
+#### Local Development
+Prerequisites: Python 3.12+, `uv` (dependency manager), `poppler-utils` (for PDF processing), and Tesseract OCR installed on your system.
+
+```bash
+# Install dependencies
+uv sync
+
+# Run the server
+uv run uvicorn app.main:app --reload --port 8080
+```
+
+### API Usage
+
+#### 1. Extract Text from Images
+**Endpoint**: `POST /extract_text`
+
+**Parameters (Form Data):**
+- `input_images`: List of image files (JPEG, PNG, WEBP, etc.).
+- `lang`: Language code. Options: `eng`, `por`, `eng+por` (default), or `auto`.
+- `mode`: Processing mode. Options: `fast` (default), `accurate`.
+- `auto_detect`: Boolean (`true`/`false`). Explicitly enable OSD.
+
+**Example (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_text' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_images=@document.jpg;type=image/jpeg' \
+  -F 'lang=por' \
+  -F 'mode=accurate'
+```
+
+#### 2. Extract Text from PDF
+**Endpoint**: `POST /extract_pdf`
+
+**Parameters (Form Data):**
+- `input_file`: Single PDF file.
+- `lang`, `mode`, `auto_detect`: Same as image endpoint.
+- `force_processing`: Boolean (`true`/`false`). By default, PDFs with > 10 pages are rejected to save resources. Set this to `true` to override the limit.
+
+**Example (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_pdf' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_file=@document.pdf;type=application/pdf' \
+  -F 'force_processing=true'
+```
+
+### Development Guide
+
+#### Architecture
+- **FastAPI**: Handles HTTP requests and validation.
+- **Tesseract OCR**: The core OCR engine.
+- **Pillow (PIL)**: Used for image preprocessing in `accurate` mode.
+- **pdf2image / Poppler**: Converts PDF pages to images for reliable OCR.
+- **Filetype**: Validates image magic bytes securely.
+- **AsyncIO**: OCR tasks run in thread pools to prevent blocking the event loop.
+
+#### Testing
+Run tests using `pytest`:
+```bash
+uv run pytest
+```
+
+---
+
+## 🇧🇷 Português
+
+### Visão Geral
+Este projeto fornece uma API robusta para Reconhecimento Óptico de Caracteres (OCR) capaz de extrair texto de imagens e documentos PDF. Suporta múltiplos idiomas (Inglês e Português), documentos com idiomas mistos e oferece modos de processamento configuráveis para velocidade ou precisão.
+
+### Funcionalidades
+- **Suporte Multi-idioma**: Inglês (`eng`), Português (`por`) e misto (`eng+por`).
+- **Modos de Processamento**:
+  - `fast` (Rápido): Extração veloz para documentos nítidos.
+  - `accurate` (Preciso): Pré-processamento aprimorado (redimensionamento, ajuste de contraste) para melhores resultados em imagens difíceis.
+- **Detecção Automática**: Detecção de Orientação e Script (OSD) para lidar com imagens rotacionadas ou scripts desconhecidos.
+- **Validação Rigorosa**: Valida tipos de arquivos via *magic bytes* (verificação de tipo MIME) para garantir segurança.
+- **Suporte a PDF**: Extrai texto de documentos PDF (abordagem híbrida: converte páginas em imagens para OCR robusto).
+- **Dockerizado**: Build Docker multi-estágio otimizado para fácil implantação.
+
+### Instalação e Execução
+
+#### Usando Docker (Recomendado)
+```bash
+# Construir a imagem
+docker build -t api_ocr .
+
+# Rodar o container
+docker run -p 8080:8080 api_ocr
+```
+A API estará disponível em `http://localhost:8080`.
+
+#### Desenvolvimento Local
+Pré-requisitos: Python 3.12+, `uv` (gerenciador de dependências), `poppler-utils` (para processamento de PDF) e Tesseract OCR instalado no sistema.
+
+```bash
+# Instalar dependências
+uv sync
+
+# Rodar o servidor
+uv run uvicorn app.main:app --reload --port 8080
+```
+
+### Uso da API
+
+#### 1. Extrair Texto de Imagens
+**Endpoint**: `POST /extract_text`
+
+**Parâmetros (Form Data):**
+- `input_images`: Lista de arquivos de imagem (JPEG, PNG, WEBP, etc.).
+- `lang`: Código do idioma. Opções: `eng`, `por`, `eng+por` (padrão) ou `auto`.
+- `mode`: Modo de processamento. Opções: `fast` (padrão), `accurate`.
+- `auto_detect`: Booleano (`true`/`false`). Habilita explicitamente o OSD.
+
+**Exemplo (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_text' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_images=@documento.jpg;type=image/jpeg' \
+  -F 'lang=por' \
+  -F 'mode=accurate'
+```
+
+#### 2. Extrair Texto de PDF
+**Endpoint**: `POST /extract_pdf`
+
+**Parâmetros (Form Data):**
+- `input_file`: Arquivo PDF único.
+- `lang`, `mode`, `auto_detect`: Iguais ao endpoint de imagem.
+- `force_processing`: Booleano (`true`/`false`). Por padrão, PDFs com mais de 10 páginas são rejeitados para economizar recursos. Defina como `true` para ignorar o limite.
+
+**Exemplo (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_pdf' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_file=@documento.pdf;type=application/pdf' \
+  -F 'force_processing=true'
+```
+
+### Guia de Desenvolvimento
+
+#### Arquitetura
+- **FastAPI**: Gerencia requisições HTTP e validação.
+- **Tesseract OCR**: O motor principal de OCR.
+- **Pillow (PIL)**: Usado para pré-processamento de imagens no modo `accurate`.
+- **pdf2image / Poppler**: Converte páginas de PDF em imagens para OCR confiável.
+- **Filetype**: Valida *magic bytes* de imagens de forma segura.
+- **AsyncIO**: Tarefas de OCR rodam em *thread pools* para não bloquear o *event loop*.
+
+#### Testes
+Execute os testes usando `pytest`:
+```bash
+uv run pytest
+```
