@@ -11,7 +11,7 @@
 ## 🇺🇸 English
 
 ### Overview
-This project provides a robust API for Optical Character Recognition (OCR) capable of extracting text from images. It supports multiple languages (English and Portuguese), mixed-language documents, and offers configurable processing modes for speed or accuracy.
+This project provides a robust API for Optical Character Recognition (OCR) capable of extracting text from images and PDF documents. It supports multiple languages (English and Portuguese), mixed-language documents, and offers configurable processing modes for speed or accuracy.
 
 ### Features
 - **Multi-language Support**: English (`eng`), Portuguese (`por`), and mixed (`eng+por`).
@@ -20,6 +20,7 @@ This project provides a robust API for Optical Character Recognition (OCR) capab
   - `accurate`: Enhanced preprocessing (rescaling, contrast adjustment) for better results on difficult images.
 - **Auto-Detection**: Orientation and Script Detection (OSD) to handle rotated images or unknown scripts.
 - **Strict Validation**: Validates file types via magic bytes (MIME type verification) to ensure security.
+- **PDF Support**: Extract text from PDF documents (hybrid approach: converts pages to images for robust OCR).
 - **Dockerized**: Optimized multi-stage Docker build for easy deployment.
 
 ### Installation & Running
@@ -35,7 +36,7 @@ docker run -p 8080:8080 api_ocr
 The API will be available at `http://localhost:8080`.
 
 #### Local Development
-Prerequisites: Python 3.12+, `uv` (dependency manager), and Tesseract OCR installed on your system.
+Prerequisites: Python 3.12+, `uv` (dependency manager), `poppler-utils` (for PDF processing), and Tesseract OCR installed on your system.
 
 ```bash
 # Install dependencies
@@ -47,7 +48,7 @@ uv run uvicorn app.main:app --reload --port 8080
 
 ### API Usage
 
-#### Extract Text
+#### 1. Extract Text from Images
 **Endpoint**: `POST /extract_text`
 
 **Parameters (Form Data):**
@@ -67,12 +68,31 @@ curl -X 'POST' \
   -F 'mode=accurate'
 ```
 
+#### 2. Extract Text from PDF
+**Endpoint**: `POST /extract_pdf`
+
+**Parameters (Form Data):**
+- `input_file`: Single PDF file.
+- `lang`, `mode`, `auto_detect`: Same as image endpoint.
+- `force_processing`: Boolean (`true`/`false`). By default, PDFs with > 10 pages are rejected to save resources. Set this to `true` to override the limit.
+
+**Example (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_pdf' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_file=@document.pdf;type=application/pdf' \
+  -F 'force_processing=true'
+```
+
 ### Development Guide
 
 #### Architecture
 - **FastAPI**: Handles HTTP requests and validation.
 - **Tesseract OCR**: The core OCR engine.
 - **Pillow (PIL)**: Used for image preprocessing in `accurate` mode.
+- **pdf2image / Poppler**: Converts PDF pages to images for reliable OCR.
 - **Filetype**: Validates image magic bytes securely.
 - **AsyncIO**: OCR tasks run in thread pools to prevent blocking the event loop.
 
@@ -87,7 +107,7 @@ uv run pytest
 ## 🇧🇷 Português
 
 ### Visão Geral
-Este projeto fornece uma API robusta para Reconhecimento Óptico de Caracteres (OCR) capaz de extrair texto de imagens. Suporta múltiplos idiomas (Inglês e Português), documentos com idiomas mistos e oferece modos de processamento configuráveis para velocidade ou precisão.
+Este projeto fornece uma API robusta para Reconhecimento Óptico de Caracteres (OCR) capaz de extrair texto de imagens e documentos PDF. Suporta múltiplos idiomas (Inglês e Português), documentos com idiomas mistos e oferece modos de processamento configuráveis para velocidade ou precisão.
 
 ### Funcionalidades
 - **Suporte Multi-idioma**: Inglês (`eng`), Português (`por`) e misto (`eng+por`).
@@ -96,6 +116,7 @@ Este projeto fornece uma API robusta para Reconhecimento Óptico de Caracteres (
   - `accurate` (Preciso): Pré-processamento aprimorado (redimensionamento, ajuste de contraste) para melhores resultados em imagens difíceis.
 - **Detecção Automática**: Detecção de Orientação e Script (OSD) para lidar com imagens rotacionadas ou scripts desconhecidos.
 - **Validação Rigorosa**: Valida tipos de arquivos via *magic bytes* (verificação de tipo MIME) para garantir segurança.
+- **Suporte a PDF**: Extrai texto de documentos PDF (abordagem híbrida: converte páginas em imagens para OCR robusto).
 - **Dockerizado**: Build Docker multi-estágio otimizado para fácil implantação.
 
 ### Instalação e Execução
@@ -111,7 +132,7 @@ docker run -p 8080:8080 api_ocr
 A API estará disponível em `http://localhost:8080`.
 
 #### Desenvolvimento Local
-Pré-requisitos: Python 3.12+, `uv` (gerenciador de dependências) e Tesseract OCR instalado no sistema.
+Pré-requisitos: Python 3.12+, `uv` (gerenciador de dependências), `poppler-utils` (para processamento de PDF) e Tesseract OCR instalado no sistema.
 
 ```bash
 # Instalar dependências
@@ -123,7 +144,7 @@ uv run uvicorn app.main:app --reload --port 8080
 
 ### Uso da API
 
-#### Extrair Texto
+#### 1. Extrair Texto de Imagens
 **Endpoint**: `POST /extract_text`
 
 **Parâmetros (Form Data):**
@@ -143,12 +164,31 @@ curl -X 'POST' \
   -F 'mode=accurate'
 ```
 
+#### 2. Extrair Texto de PDF
+**Endpoint**: `POST /extract_pdf`
+
+**Parâmetros (Form Data):**
+- `input_file`: Arquivo PDF único.
+- `lang`, `mode`, `auto_detect`: Iguais ao endpoint de imagem.
+- `force_processing`: Booleano (`true`/`false`). Por padrão, PDFs com mais de 10 páginas são rejeitados para economizar recursos. Defina como `true` para ignorar o limite.
+
+**Exemplo (cURL):**
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/extract_pdf' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'input_file=@documento.pdf;type=application/pdf' \
+  -F 'force_processing=true'
+```
+
 ### Guia de Desenvolvimento
 
 #### Arquitetura
 - **FastAPI**: Gerencia requisições HTTP e validação.
 - **Tesseract OCR**: O motor principal de OCR.
 - **Pillow (PIL)**: Usado para pré-processamento de imagens no modo `accurate`.
+- **pdf2image / Poppler**: Converte páginas de PDF em imagens para OCR confiável.
 - **Filetype**: Valida *magic bytes* de imagens de forma segura.
 - **AsyncIO**: Tarefas de OCR rodam em *thread pools* para não bloquear o *event loop*.
 

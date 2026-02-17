@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from app.domain.fileUpload import validate_image_file
+from app.domain.fileUpload import validate_image_file, validate_pdf_file
 from io import BytesIO
 import pytest
 from fastapi import HTTPException
@@ -24,3 +24,16 @@ def test_validate_empty_file():
         validate_image_file(file)
     assert exc.value.status_code == 400
     assert "Empty file uploaded" in exc.value.detail
+
+def test_validate_valid_pdf():
+    # Create a dummy PDF file (signature: %PDF-)
+    pdf_header = b'%PDF-1.4\n'
+    file = UploadFile(filename="test.pdf", file=BytesIO(pdf_header))
+    assert validate_pdf_file(file) is True
+
+def test_validate_invalid_pdf():
+    # Create a text file
+    file = UploadFile(filename="test.txt", file=BytesIO(b"Hello World"))
+    with pytest.raises(HTTPException) as exc:
+        validate_pdf_file(file)
+    assert exc.value.status_code == 400

@@ -8,6 +8,7 @@ dependencies = [
     "fastapi>=0.129.0",
     "filetype>=1.2.0",
     "httpx>=0.28.1",
+    "pdf2image>=1.17.0",
     "pillow>=12.1.1",
     "pydantic-settings>=2.13.0",
     "pytesseract>=0.3.13",

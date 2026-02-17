@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import sentry_sdk
 
-from app.api import text_extract  # updated
+from app.api import text_extract, pdf_extract  # updated
 sentry_sdk.init(
     dsn="https://5c74c0bf64424183a3d8fea7a803a9b0@o4505535984828416.ingest.sentry.io/4505535986335744",
     traces_sample_rate=1.0,
@@ -32,6 +32,7 @@ def create_application() -> FastAPI:
         lifespan=lifespan
     )
     application.include_router(text_extract.router)
+    application.include_router(pdf_extract.router)
 
     return application
 

@@ -14,11 +14,12 @@ FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
-# Install runtime dependencies (tesseract and languages)
+# Install runtime dependencies (tesseract, languages, and poppler)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tesseract-ocr \
     tesseract-ocr-por \
     tesseract-ocr-eng \
+    poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment from builder
