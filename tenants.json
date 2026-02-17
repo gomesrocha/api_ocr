@@ -1,0 +1,9 @@
+{
+  "client_a": {
+    "bucket_name": "bucket-a",
+    "endpoint_url": "https://s3.example.com",
+    "aws_access_key_id": "mock_key",
+    "aws_secret_access_key": "mock_secret",
+    "region_name": "us-east-1"
+  }
+}
