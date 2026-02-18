@@ -3,7 +3,7 @@ from typing import List, Optional
 import time
 import os
 
-from app.domain import pdf_ocr, fileUpload
+from app.domain import pdf_ocr, fileUpload, ner
 from app.model.TextSchema import TextExtractDocument
 from app.services import storage
 
@@ -117,10 +117,14 @@ async def extract_pdf(
         if temp_file and os.path.exists(temp_file):
             os.remove(temp_file)
 
+    # Process NER
+    entities = ner.extract_entities(text, lang_hint=lang)
+
     time_taken = str(round((time.time() - start_time), 2))
 
     return [TextExtractDocument(
         file_name=filename or "unknown",
         text=text,
+        entities=entities,
         time_taken=time_taken
     )]

@@ -3,7 +3,7 @@ from typing import List, Optional
 import time
 import os
 
-from app.domain import ocr, fileUpload
+from app.domain import ocr, fileUpload, ner
 from app.model.TextSchema import TextExtractDocument
 from app.services import storage
 
@@ -67,6 +67,9 @@ async def extract_text(
                     mode=mode,
                     auto=auto_detect
                 )
+
+                # Extract entities
+                entities = ner.extract_entities(text, lang_hint=lang)
             finally:
                 if os.path.exists(temp_file):
                     os.remove(temp_file)
@@ -76,6 +79,7 @@ async def extract_text(
             results.append(TextExtractDocument(
                 file_name=img.filename or "unknown",
                 text=text,
+                entities=entities,
                 time_taken=time_taken
             ))
 
@@ -108,10 +112,14 @@ async def extract_text(
                     auto=auto_detect
                 )
 
+                # Extract entities
+                entities = ner.extract_entities(text, lang_hint=lang)
+
                 time_taken = str(round((time.time() - start_time), 2))
                 results.append(TextExtractDocument(
                     file_name=key,
                     text=text,
+                    entities=entities,
                     time_taken=time_taken
                 ))
             finally:

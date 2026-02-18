@@ -83,3 +83,24 @@ def test_extract_pdf_invalid_file(mock_ocr_read_image, mock_pdf_tools):
 
     assert response.status_code == 400
     assert "Invalid file type" in response.json()["detail"] or "Could not determine" in response.json()["detail"]
+
+def test_extract_pdf_with_ner(mock_ocr_read_image, mock_pdf_tools):
+    mock_convert, mock_info = mock_pdf_tools
+
+    # Valid PDF header
+    pdf_content = b'%PDF-1.4\n'
+    files = {"input_file": ("test.pdf", pdf_content, "application/pdf")}
+
+    # Mock NER
+    with patch("app.api.pdf_extract.ner.extract_entities") as mock_ner:
+        mock_ner.return_value = [{"text": "Entity", "label": "LOC", "start": 0, "end": 6}]
+
+        response = client.post("/extract_pdf", files=files)
+
+        assert response.status_code == 200
+        data = response.json()
+        assert "entities" in data[0]
+        assert len(data[0]["entities"]) == 1
+        assert data[0]["entities"][0]["text"] == "Entity"
+
+        mock_ner.assert_called_once()

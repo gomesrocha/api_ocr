@@ -72,3 +72,24 @@ def test_extract_text_auto_lang(mock_ocr_read_image):
     call_args = mock_ocr_read_image.call_args
     assert call_args.kwargs['lang'] == 'eng+por' # Should default to eng+por
     assert call_args.kwargs['auto'] is True # Should be True due to lang='auto'
+
+def test_extract_text_with_ner(mock_ocr_read_image):
+    # Mock text with entities
+    mock_ocr_read_image.return_value = "My name is Fabio and I live in Brazil."
+
+    img_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89'
+    files = {"input_images": ("test.png", img_content, "image/png")}
+
+    # Patch ner.extract_entities
+    with patch("app.api.text_extract.ner.extract_entities") as mock_ner:
+        mock_ner.return_value = [{"text": "Fabio", "label": "PER", "start": 11, "end": 16}]
+
+        response = client.post("/extract_text", files=files)
+
+        assert response.status_code == 200
+        data = response.json()
+        assert "entities" in data[0]
+        assert len(data[0]["entities"]) == 1
+        assert data[0]["entities"][0]["text"] == "Fabio"
+
+        mock_ner.assert_called_once()
