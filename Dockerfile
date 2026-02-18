@@ -9,6 +9,10 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies into .venv
 RUN uv sync --frozen --no-dev
 
+# Download spaCy models into .venv
+RUN .venv/bin/python -m spacy download en_core_web_sm && \
+    .venv/bin/python -m spacy download pt_core_news_sm
+
 # Runtime stage
 FROM python:3.12-slim-bookworm
 
