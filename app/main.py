@@ -1,40 +1,21 @@
-import os
-import logging
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
-import sentry_sdk
+from pydantic import BaseModel
+import uvicorn
 
-from app.api import text_extract, pdf_extract  # updated
-sentry_sdk.init(
-    dsn="https://5c74c0bf64424183a3d8fea7a803a9b0@o4505535984828416.ingest.sentry.io/4505535986335744",
-    traces_sample_rate=1.0,
-    profiles_sample_rate=1.0,    
-    profiles_sampler=1.0,
-)
+app = FastAPI()
 
-log = logging.getLogger("uvicorn")
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    log.info("Starting up...")
-    yield
-    log.info("Shutting down...")
+@app.get('/')
+def read_root():
+    return {'message': 'Welcome to the FastAPI app!'}
 
-def create_application() -> FastAPI:
-    application = FastAPI(
-        title="API_OCR",
-        version="0.1.0",
-        description="OCR API project using tesseract and fastapi",
-        contact={
-            "name": "Fabio",
-        },
-        lifespan=lifespan
-    )
-    application.include_router(text_extract.router)
-    application.include_router(pdf_extract.router)
+@app.post('/items/')
+def create_item(item: Item):
+    return item
 
-    return application
-
-
-app = create_application()
+if __name__ == '__main__':
+    uvicorn.run('main:app', host='127.0.0.1', port=8000, reload=True)
