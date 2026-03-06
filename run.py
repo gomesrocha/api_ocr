@@ -1,0 +1,1 @@
+from app import create_app\nif __name__ == '__main__':\n    app = create_app()\n    app.run(debug=True)
