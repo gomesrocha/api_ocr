@@ -1,1 +1,0 @@
-from flask import Flask\nfrom .config import Config\nfrom .routes import main as main_blueprint\ndef create_app():\n    app = Flask(__name__)\n    app.config.from_object(Config)\n    app.register_blueprint(main_blueprint)\n    return app
