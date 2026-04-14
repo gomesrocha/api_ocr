@@ -1,1 +1,0 @@
-@main.route('/')\ndef index():\n    return "Hello, World!"

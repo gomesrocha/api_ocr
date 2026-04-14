@@ -1,1 +1,0 @@
-class Config:\n    DEBUG = False\n    TESTING = False\n    SECRET_KEY = 'your-secret-key'
